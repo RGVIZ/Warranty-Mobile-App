@@ -247,6 +247,10 @@
                                 <label for="modelYear" class="block text-sm font-medium text-gray-700 mb-1">Model Year <span class="text-red-500">*</span></label>
                                 <input type="text" id="modelYear" name="modelYear" placeholder="e.g., 2023" pattern="[0-9]{4}" title="Please enter a 4-digit year" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
+                            <div>
+                                <label for="mileage" class="block text-sm font-medium text-gray-700 mb-1">Mileage <span class="text-red-500">*</span></label>
+                                <input type="text" id="mileage" name="mileage" placeholder="e.g., 123456 km" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
                         </div>
                     </div>
 
@@ -269,16 +273,144 @@
                     </div>
                 </div>
 
-                <!-- Conditional Fields Wrapper for Non-Automotive (Placeholder) -->
+                <!-- Conditional Fields Wrapper for Non-Automotive -->
                 <div id="nonAutomotiveFormSections" class="hidden space-y-6">
+                    <!-- Section 1: Basic Details (Non-Automotive Specific) -->
                     <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
-                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">Non-Automotive Details</span></h2>
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">1</span>Basic Details</h2>
                         <div class="mt-5 space-y-5">
                             <div>
-                                <label for="applicationType" class="block text-sm font-medium text-gray-700 mb-1">Application Type <span class="text-red-500">*</span></label>
-                                <input type="text" id="applicationType" placeholder="e.g., Generator, Industrial Motor" name="applicationType" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                <label for="nonAutoWarrantyClaimNumber" class="block text-sm font-medium text-gray-700 mb-1">Warranty Claim Number</label>
+                                <p id="nonAutoWarrantyClaimNumber" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">WC-NONAUTO-001</p>
                             </div>
-                            <!-- You can add more non-automotive specific fields here -->
+                            <div>
+                                <label for="nonAutoCustomer" class="block text-sm font-medium text-gray-700 mb-1">Customer <span class="text-red-500">*</span></label>
+                                <select id="nonAutoCustomer" name="nonAutoCustomer" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Customer</option>
+                                    <option value="Industrial Corp">Industrial Corp</option>
+                                    <option value="Agri Solutions">Agri Solutions</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoCustomerReportedDate" class="block text-sm font-medium text-gray-700 mb-1">Customer Reported Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="nonAutoCustomerReportedDate" name="nonAutoCustomerReportedDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoDefectType" class="block text-sm font-medium text-gray-700 mb-1">Defect Type <span class="text-red-500">*</span></label>
+                                <select id="nonAutoDefectType" name="nonAutoDefectType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Defect</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Material">Material</option>
+                                    <option value="Wear and Tear">Wear and Tear</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoCreatedBy" class="block text-sm font-medium text-gray-700 mb-1">Created by</label>
+                                <p id="nonAutoCreatedBy" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">Logged In User Name</p>
+                            </div>
+                            <div>
+                                <label for="nonAutoCustomerVerbatim" class="block text-sm font-medium text-gray-700 mb-1">Customer Verbatim / Complaint Description <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoCustomerVerbatim" name="nonAutoCustomerVerbatim" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="Enter the customer's exact words describing the issue..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Reference Images (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>Reference Images</h2>
+                        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Good / Working Part</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoGoodPartUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="nonAutoGoodPartUpload" name="nonAutoGoodPartUpload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Bad / Failed Part <span class="text-red-500">*</span></label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoBadPartUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="nonAutoBadPartUpload" name="nonAutoBadPartUpload" type="file" class="sr-only" required></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Product Details (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">3</span>Product Details</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="nonAutoProductType" class="block text-sm font-medium text-gray-700 mb-1">Product Type <span class="text-red-500">*</span></label>
+                                <select id="nonAutoProductType" name="nonAutoProductType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Product Type</option>
+                                    <option value="Industrial Motor">Industrial Motor</option>
+                                    <option value="Generator">Generator</option>
+                                    <option value="Agricultural Equipment">Agricultural Equipment</option>
+                                    <option value="HVAC Unit">HVAC Unit</option>
+                                    <option value="Pump">Pump</option>
+                                    <option value="Valve">Valve</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoProductModel" class="block text-sm font-medium text-gray-700 mb-1">Product Model <span class="text-red-500">*</span></label>
+                                <input type="text" id="nonAutoProductModel" name="nonAutoProductModel" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoSerialNumber" class="block text-sm font-medium text-gray-700 mb-1">Serial Number <span class="text-red-500">*</span></label>
+                                <input type="text" id="nonAutoSerialNumber" name="nonAutoSerialNumber" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoInstallationDate" class="block text-sm font-medium text-gray-700 mb-1">Installation Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="nonAutoInstallationDate" name="nonAutoInstallationDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoOperatingHours" class="block text-sm font-medium text-gray-700 mb-1">Operating Hours/Cycles <span class="text-red-500">*</span></label>
+                                <input type="number" id="nonAutoOperatingHours" name="nonAutoOperatingHours" placeholder="e.g., 5000" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Application & Environment Information (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">4</span>Application & Environment Information</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="nonAutoApplicationEnvironment" class="block text-sm font-medium text-gray-700 mb-1">Application Environment <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoApplicationEnvironment" name="nonAutoApplicationEnvironment" rows="3" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="e.g., High dust, corrosive atmosphere, vibration-prone" required></textarea>
+                            </div>
+                            <div>
+                                <label for="nonAutoUsagePattern" class="block text-sm font-medium text-gray-700 mb-1">Usage Pattern <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoUsagePattern" name="nonAutoUsagePattern" rows="3" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="e.g., Continuous operation, intermittent heavy loads, seasonal use" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Attachments (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">5</span>Attachments</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Attachment</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoAttachmentUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose file</span><input id="nonAutoAttachmentUpload" name="nonAutoAttachmentUpload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,11 +498,21 @@
         ];
 
         // Get all input/select/textarea elements within the non-automotive sections
+        // Note: Specific IDs are used for non-automotive inputs to ensure correct selection
         const nonAutomotiveRequiredInputs = [
-            ...nonAutomotiveFormSections.querySelectorAll('select[required]'),
-            ...nonAutomotiveFormSections.querySelectorAll('input[required]'),
-            ...nonAutomotiveFormSections.querySelectorAll('textarea[required]')
-        ];
+            document.getElementById('nonAutoCustomer'),
+            document.getElementById('nonAutoCustomerReportedDate'),
+            document.getElementById('nonAutoDefectType'),
+            document.getElementById('nonAutoCustomerVerbatim'),
+            document.getElementById('nonAutoBadPartUpload'),
+            document.getElementById('nonAutoProductType'),
+            document.getElementById('nonAutoProductModel'),
+            document.getElementById('nonAutoSerialNumber'),
+            document.getElementById('nonAutoInstallationDate'),
+            document.getElementById('nonAutoOperatingHours'),
+            document.getElementById('nonAutoApplicationEnvironment'),
+            document.getElementById('nonAutoUsagePattern'),
+        ].filter(Boolean); // Filter out any nulls if an ID doesn't exist
 
 
         customerTypeSelect.addEventListener('change', function() {
