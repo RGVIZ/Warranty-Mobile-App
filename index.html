@@ -420,7 +420,8 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="form-section pt-4">
+                <!-- Initially hidden, displayed only when a customer type is selected -->
+                <div id="submitButtonContainer" class="form-section pt-4 hidden">
                     <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
                         Submit Claim
                     </button>
@@ -493,6 +494,7 @@
         const customerTypeSelect = document.getElementById('customerType');
         const automotiveFormSections = document.getElementById('automotiveFormSections');
         const nonAutomotiveFormSections = document.getElementById('nonAutomotiveFormSections');
+        const submitButtonContainer = document.getElementById('submitButtonContainer'); // Get the submit button container
 
         // Get all input/select/textarea elements within the automotive sections
         const automotiveRequiredInputs = [
@@ -525,6 +527,7 @@
             // Hide all conditional sections first
             automotiveFormSections.classList.add('hidden');
             nonAutomotiveFormSections.classList.add('hidden');
+            submitButtonContainer.classList.add('hidden'); // Hide submit button by default
 
             // Set all conditional inputs to not required by default
             automotiveRequiredInputs.forEach(input => input.required = false);
@@ -532,10 +535,12 @@
             
             if (selectedType === 'Automotive') {
                 automotiveFormSections.classList.remove('hidden');
+                submitButtonContainer.classList.remove('hidden'); // Show submit button
                 // Set required for automotive fields
                 automotiveRequiredInputs.forEach(input => input.required = true);
             } else if (selectedType === 'Non-Automotive') {
                 nonAutomotiveFormSections.classList.remove('hidden');
+                submitButtonContainer.classList.remove('hidden'); // Show submit button
                 // Set required for non-automotive fields
                 nonAutomotiveRequiredInputs.forEach(input => input.required = true);
             }
