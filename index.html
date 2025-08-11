@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warranty Management App</title>
+    <!-- Use Tailwind CSS for a modern, responsive design -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -11,14 +12,15 @@
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Base page styles */
+
+        /* Base page styles for smooth transitions */
         .page {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             min-height: 100vh;
-            transition: opacity 0.35s, visibility 0.35s;
+            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
             visibility: hidden;
             opacity: 0;
         }
@@ -28,274 +30,533 @@
             z-index: 10;
         }
         
-        /* New Transition Styles */
+        /* New Transition Styles for form sections */
         #creationPage .form-section {
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-
         #creationPage.page-current .form-section {
             opacity: 1;
             transform: translateY(0);
         }
         
-        .tab-button.active {
-            border-bottom: 2px solid #3B82F6;
-            color: #3B82F6;
-            font-weight: 600;
+        /* Floating Action Button Style & Transition */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            z-index: 30;
+        }
+        .fab-hidden {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        
+        /* Header transition for creation page */
+        #creationPage header {
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #creationPage.page-current header {
+            transform: translateY(0);
         }
     </style>
 </head>
-<body class="bg-gray-100 antialiased text-gray-800">
+<body class="bg-gray-100 overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="bg-white shadow-md p-4 flex items-center justify-between">
-        <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-gray-900">Warranty Management</h1>
-        </div>
-        <nav>
-            <ul class="flex space-x-4">
-                <li><button id="homeTab" class="tab-button p-2 text-gray-600 hover:text-gray-900 transition-colors active">Home</button></li>
-                <li><button id="createClaimTab" class="tab-button p-2 text-gray-600 hover:text-gray-900 transition-colors">Create Claim</button></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="relative mx-auto w-full min-h-screen">
 
-    <!-- Main Content -->
-    <main class="container mx-auto p-4 md:p-8">
-        
-        <!-- Home Page -->
-        <section id="homePage" class="page page-current max-w-4xl mx-auto">
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-4">Dashboard</h2>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-blue-500 text-white rounded-lg p-6 shadow-md">
-                        <h3 class="text-xl font-semibold">Total Claims</h3>
-                        <p class="text-4xl font-bold mt-2">1,250</p>
+    <!-- =================================================================
+         HOME PAGE
+    ================================================================== -->
+    <div id="homePage" class="page page-current">
+        <header class="bg-white sticky top-0 z-20 shadow-lg">
+            <div class="max-w-xl mx-auto p-4 md:p-6 space-y-4">
+                <h1 class="text-3xl font-bold text-slate-800 text-left">Warranty Claims</h1>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
                     </div>
-                    <div class="bg-green-500 text-white rounded-lg p-6 shadow-md">
-                        <h3 class="text-xl font-semibold">Approved Claims</h3>
-                        <p class="text-4xl font-bold mt-2">980</p>
-                    </div>
-                    <div class="bg-yellow-500 text-white rounded-lg p-6 shadow-md">
-                        <h3 class="text-xl font-semibold">Pending Claims</h3>
-                        <p class="text-4xl font-bold mt-2">270</p>
-                    </div>
+                    <input type="text" id="globalSearch" placeholder="Search claims..." class="w-full bg-slate-100 border-transparent rounded-full py-2.5 pl-10 pr-4 text-slate-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors">
                 </div>
-
-                <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">Recent Claims</h3>
-                
-                <!-- Recent Claims Table -->
-                <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-inner">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Claim ID
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Product
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Submitted Date
-                                </th>
-                                <th scope="col" class="relative px-6 py-3">
-                                    <span class="sr-only">Actions</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    WM-00123
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    Automotive Engine
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Approved
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    2025-08-01
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" onclick="viewClaimDetails()" class="text-indigo-600 hover:text-indigo-900">View Details</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    WM-00124
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    Home Appliance
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    2025-08-02
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" onclick="viewClaimDetails()" class="text-indigo-600 hover:text-indigo-900">View Details</a>
-                                </td>
-                            </tr>
-                            <!-- More rows... -->
-                        </tbody>
-                    </table>
-                </div>
-
             </div>
-        </section>
+        </header>
 
-        <!-- Claim Creation Page -->
-        <section id="creationPage" class="page max-w-3xl mx-auto">
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-4">Create New Claim</h2>
-                
-                <!-- Customer Type Selection (Now hidden by default) -->
-                <div class="mb-6 hidden">
-                    <label for="customerType" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
-                    <select id="customerType" name="customerType" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        <option value="automotive">Automotive</option>
-                        <option value="home-appliance">Home Appliance</option>
-                    </select>
+        <main class="max-w-xl mx-auto p-4 md:p-6 pb-28">
+            <div id="claimList" class="space-y-4">
+                <!-- Claim cards with enhanced styling -->
+                <div class="claim-card bg-white p-5 rounded-xl shadow-md border border-gray-200 cursor-pointer hover:border-indigo-500 transition-all duration-200" onclick="viewClaimDetails()" data-search-terms="crankshaft assembly w-102345 automotive approved"><div class="flex justify-between items-start"><div><p class="font-semibold text-slate-900">Crankshaft Assembly</p><p class="text-sm text-gray-500 mt-1">Claim # W-102345</p></div><span class="text-xs font-bold bg-green-100 text-green-800 px-3 py-1 rounded-full uppercase tracking-wider">Approved</span></div><div class="mt-4 flex justify-between items-center text-sm text-gray-600"><span><strong class="font-medium text-slate-500">Type:</strong> Automotive</span><span><strong class="font-medium text-slate-500">Date:</strong> 2025-08-01</span></div></div>
+                <div class="claim-card bg-white p-5 rounded-xl shadow-md border border-gray-200 cursor-pointer hover:border-indigo-500 transition-all duration-200" onclick="viewClaimDetails()" data-search-terms="industrial motor w-102344 non-automotive pending"><div class="flex justify-between items-start"><div><p class="font-semibold text-slate-900">Industrial Motor</p><p class="text-sm text-gray-500 mt-1">Claim # W-102344</p></div><span class="text-xs font-bold bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full uppercase tracking-wider">Pending</span></div><div class="mt-4 flex justify-between items-center text-sm text-gray-600"><span><strong class="font-medium text-slate-500">Type:</strong> Non-Automotive</span><span><strong class="font-medium text-slate-500">Date:</strong> 2025-07-29</span></div></div>
+                <div class="claim-card bg-white p-5 rounded-xl shadow-md border border-gray-200 cursor-pointer hover:border-indigo-500 transition-all duration-200" onclick="viewClaimDetails()" data-search-terms="fuel injector w-102342 automotive rejected"><div class="flex justify-between items-start"><div><p class="font-semibold text-slate-900">Fuel Injector</p><p class="text-sm text-gray-500 mt-1">Claim # W-102342</p></div><span class="text-xs font-bold bg-red-100 text-red-800 px-3 py-1 rounded-full uppercase tracking-wider">Rejected</span></div><div class="mt-4 flex justify-between items-center text-sm text-gray-600"><span><strong class="font-medium text-slate-500">Type:</strong> Automotive</span><span><strong class="font-medium text-slate-500">Date:</strong> 2025-07-25</span></div></div>
+                <div class="claim-card bg-white p-5 rounded-xl shadow-md border border-gray-200 cursor-pointer hover:border-indigo-500 transition-all duration-200" onclick="viewClaimDetails()" data-search-terms="water pump w-102340 automotive draft"><div class="flex justify-between items-start"><div><p class="font-semibold text-slate-900">Water Pump</p><p class="text-sm text-gray-500 mt-1">Claim # W-102340</p></div><span class="text-xs font-bold bg-gray-100 text-gray-800 px-3 py-1 rounded-full uppercase tracking-wider">Draft</span></div><div class="mt-4 flex justify-between items-center text-sm text-gray-600"><span><strong class="font-medium text-slate-500">Type:</strong> Automotive</span><span><strong class="font-medium text-slate-500">Date:</strong> 2025-07-23</span></div></div>
+            </div>
+            <!-- Enhanced Empty State Message -->
+            <div id="noResultsMessage" class="hidden text-center py-20 px-4">
+                <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="mt-4 text-gray-600 font-semibold text-lg">No claims found</p>
+                <p class="mt-1 text-sm text-gray-400">Try adjusting your search or create a new claim.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button to Add New Claim -->
+    <button id="fab" onclick="showPage('creationPage')" class="fab bg-gradient-to-br from-indigo-500 to-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 transform transition-all duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+    </button>
+
+    <!-- =================================================================
+         WARRANTY CLAIM CREATION PAGE
+    ================================================================== -->
+    <div id="creationPage" class="page">
+        <header class="bg-white shadow-lg sticky top-0 z-20">
+            <div class="max-w-xl mx-auto p-4 md:p-6 flex items-center">
+                <button onclick="showPage('homePage')" class="text-gray-500 mr-2 p-2 rounded-full hover:bg-gray-100 hover:text-indigo-600 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <h1 class="text-xl font-bold text-slate-800">Create New Claim</h1>
+            </div>
+        </header>
+
+        <main class="max-w-xl mx-auto p-4 md:p-6 pb-24">
+            <form id="warrantyForm" class="space-y-6">
+
+                <!-- Always visible Customer Type selection -->
+                <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                    <div class="mt-5 space-y-5">
+                        <div>
+                            <label for="customerType" class="block text-sm font-medium text-gray-700 mb-1">Customer Type <span class="text-red-500">*</span></label>
+                            <select id="customerType" name="customerType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                <option value="">Select Type</option>
+                                <option value="Automotive">Automotive</option>
+                                <option value="Non-Automotive">Non-Automotive</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Warranty Forms Container -->
-                <div id="formsContainer">
-                    <!-- Automotive Warranty Form -->
-                    <div id="automotive-form" class="form-section">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Automotive Warranty Creation</h3>
-                        <form id="warrantyForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                            <!-- Field 1: Customer Name -->
+                <!-- Conditional Fields Wrapper for Automotive -->
+                <div id="automotiveFormSections" class="hidden space-y-6">
+                    <!-- Section 1: Basic Details (Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">1</span>Basic Details</h2>
+                        <div class="mt-5 space-y-5">
                             <div>
-                                <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">Customer Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="customerName" name="customerName" placeholder="John Doe" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label for="warrantyClaimNumber" class="block text-sm font-medium text-gray-700 mb-1">Warranty Claim Number</label>
+                                <p id="warrantyClaimNumber" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">WC-AUTO-001</p>
                             </div>
-                            
-                            <!-- Field 2: Vin Number -->
+                            <div>
+                                <label for="customer" class="block text-sm font-medium text-gray-700 mb-1">Customer <span class="text-red-500">*</span></label>
+                                <select id="customer" name="customer" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Customer</option>
+                                    <option value="Customer A">Customer A</option>
+                                    <option value="Customer B">Customer B</option>
+                                    <option value="Customer C">Customer C</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="customerReportedDate" class="block text-sm font-medium text-gray-700 mb-1">Customer Reported Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="customerReportedDate" name="customerReportedDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="defectType" class="block text-sm font-medium text-gray-700 mb-1">Defect Type <span class="text-red-500">*</span></label>
+                                <select id="defectType" name="defectType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Defect</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Material">Material</option>
+                                    <option value="Wear and Tear">Wear and Tear</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="createdBy" class="block text-sm font-medium text-gray-700 mb-1">Created by</label>
+                                <p id="createdBy" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">Logged In User Name</p>
+                            </div>
+                            <div>
+                                <label for="customerVerbatim" class="block text-sm font-medium text-gray-700 mb-1">Customer Verbatim / Complaint Description <span class="text-red-500">*</span></label>
+                                <textarea id="customerVerbatim" name="customerVerbatim" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="Enter the customer's exact words describing the issue..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Reference Images -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>Reference Images</h2>
+                        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Good / Working Part</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="good-part-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="good-part-upload" name="good-part-upload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Bad / Failed Part <span class="text-red-500">*</span></label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="bad-part-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="bad-part-upload" name="bad-part-upload" type="file" class="sr-only" required></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Dealer Details -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">3</span>Dealer Details</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="dealerName" class="block text-sm font-medium text-gray-700 mb-1">Dealer Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="dealerName" name="dealerName" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="dealerLocation" class="block text-sm font-medium text-gray-700 mb-1">Dealer Location <span class="text-red-500">*</span></label>
+                                <input type="text" id="dealerLocation" name="dealerLocation" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Vehicle Information -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">4</span>Vehicle Information</h2>
+                        <div class="mt-5 space-y-5">
                             <div>
                                 <label for="vinNumber" class="block text-sm font-medium text-gray-700 mb-1">VIN Number <span class="text-red-500">*</span></label>
-                                <input type="text" id="vinNumber" name="vinNumber" placeholder="17 Digit VIN" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <input type="text" id="vinNumber" name="vinNumber" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-                            
-                            <!-- Field 3: Dealer Name -->
                             <div>
-                                <label for="dealerName" class="block text-sm font-medium text-gray-700 mb-1">Dealer Name</label>
-                                <input type="text" id="dealerName" name="dealerName" placeholder="ABC Motors" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label for="chassisNumber" class="block text-sm font-medium text-gray-700 mb-1">Chassis Number <span class="text-red-500">*</span></label>
+                                <input type="text" id="chassisNumber" name="chassisNumber" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-                            
-                            <!-- Field 4: Dealer Location -->
                             <div>
-                                <label for="dealerLocation" class="block text-sm font-medium text-gray-700 mb-1">Dealer Location</label>
-                                <input type="text" id="dealerLocation" name="dealerLocation" placeholder="City, State" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label for="vehicleModel" class="block text-sm font-medium text-gray-700 mb-1">Model <span class="text-red-500">*</span></label>
+                                <input type="text" id="vehicleModel" name="vehicleModel" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-
-                            <!-- New Field 5: Dealer Claim/Failed Date -->
                             <div>
-                                <label for="dealerClaimFailedDate" class="block text-sm font-medium text-gray-700 mb-1">Dealer Claim/Failed Date <span class="text-red-500">*</span></label>
-                                <input type="date" id="dealerClaimFailedDate" name="dealerClaimFailedDate" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label for="saleDate" class="block text-sm font-medium text-gray-700 mb-1">Sale Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="saleDate" name="saleDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-
-                            <!-- Field 6: Model Year -->
                             <div>
-                                <label for="modelYear" class="block text-sm font-medium text-gray-700 mb-1">Model Year</label>
-                                <input type="text" id="modelYear" name="modelYear" placeholder="2023" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label for="modelYear" class="block text-sm font-medium text-gray-700 mb-1">Model Year <span class="text-red-500">*</span></label>
+                                <input type="text" id="modelYear" name="modelYear" placeholder="e.g., 2023" pattern="[0-9]{4}" title="Please enter a 4-digit year" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-
-                            <!-- Field 7: Description -->
-                            <div class="md:col-span-2">
-                                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500">*</span></label>
-                                <textarea id="description" name="description" rows="4" placeholder="Describe the issue in detail" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                            <div>
+                                <label for="mileage" class="block text-sm font-medium text-gray-700 mb-1">Mileage <span class="text-red-500">*</span></label>
+                                <input type="text" id="mileage" name="mileage" placeholder="e.g., 123456 km" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
                             </div>
-                            
-                            <!-- Submit Button -->
-                            <div class="md:col-span-2 flex justify-end">
-                                <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                    Submit Claim
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
 
-                    <!-- Home Appliance Warranty Form (Kept for demonstration, but now hidden) -->
-                    <div id="home-appliance-form" class="form-section hidden">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Home Appliance Warranty Creation</h3>
-                        <form id="homeApplianceForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Section 5: Attachments -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">5</span>Attachments</h2>
+                        <div class="mt-5 space-y-5">
                             <div>
-                                <label for="ha-customerName" class="block text-sm font-medium text-gray-700 mb-1">Customer Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="ha-customerName" name="customerName" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700 text-center">Attachment</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="attachment-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose file</span><input id="attachment-upload" name="attachment-upload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label for="ha-serialNumber" class="block text-sm font-medium text-gray-700 mb-1">Serial Number <span class="text-red-500">*</span></label>
-                                <input type="text" id="ha-serialNumber" name="serialNumber" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="ha-description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500">*</span></label>
-                                <textarea id="ha-description" name="description" rows="4" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                            </div>
-                            <div class="md:col-span-2 flex justify-end">
-                                <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                    Submit Claim
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-    </main>
 
-    <!-- Modal for messages -->
-    <div id="messageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden flex items-center justify-center z-50">
-        <div class="relative p-8 bg-white w-96 max-w-md m-auto flex-col flex rounded-lg shadow-xl">
-            <h3 id="modalTitle" class="text-xl font-bold mb-4"></h3>
-            <p id="modalMessage" class="text-gray-700 mb-6"></p>
-            <div class="flex justify-end">
-                <button id="okButton" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">OK</button>
+                <!-- Conditional Fields Wrapper for Non-Automotive -->
+                <div id="nonAutomotiveFormSections" class="hidden space-y-6">
+                    <!-- Section 1: Basic Details (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">1</span>Basic Details</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="nonAutoWarrantyClaimNumber" class="block text-sm font-medium text-gray-700 mb-1">Warranty Claim Number</label>
+                                <p id="nonAutoWarrantyClaimNumber" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">WC-NONAUTO-001</p>
+                            </div>
+                            <div>
+                                <label for="nonAutoCustomer" class="block text-sm font-medium text-gray-700 mb-1">Customer <span class="text-red-500">*</span></label>
+                                <select id="nonAutoCustomer" name="nonAutoCustomer" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Customer</option>
+                                    <option value="Industrial Corp">Industrial Corp</option>
+                                    <option value="Agri Solutions">Agri Solutions</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoCustomerReportedDate" class="block text-sm font-medium text-gray-700 mb-1">Customer Reported Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="nonAutoCustomerReportedDate" name="nonAutoCustomerReportedDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoDefectType" class="block text-sm font-medium text-gray-700 mb-1">Defect Type <span class="text-red-500">*</span></label>
+                                <select id="nonAutoDefectType" name="nonAutoDefectType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Defect</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Material">Material</option>
+                                    <option value="Wear and Tear">Wear and Tear</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoCreatedBy" class="block text-sm font-medium text-gray-700 mb-1">Created by</label>
+                                <p id="nonAutoCreatedBy" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">Logged In User Name</p>
+                            </div>
+                            <div>
+                                <label for="nonAutoCustomerVerbatim" class="block text-sm font-medium text-gray-700 mb-1">Customer Verbatim / Complaint Description <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoCustomerVerbatim" name="nonAutoCustomerVerbatim" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="Enter the customer's exact words describing the issue..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Reference Images (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>Reference Images</h2>
+                        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Good / Working Part</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoGoodPartUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="nonAutoGoodPartUpload" name="nonAutoGoodPartUpload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Bad / Failed Part <span class="text-red-500">*</span></label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoBadPartUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose image</span><input id="nonAutoBadPartUpload" name="nonAutoBadPartUpload" type="file" class="sr-only" required></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Product Details (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">3</span>Product Details</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="nonAutoProductType" class="block text-sm font-medium text-gray-700 mb-1">Product Type <span class="text-red-500">*</span></label>
+                                <select id="nonAutoProductType" name="nonAutoProductType" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                    <option value="">Select Product Type</option>
+                                    <option value="Industrial Motor">Industrial Motor</option>
+                                    <option value="Generator">Generator</option>
+                                    <option value="Agricultural Equipment">Agricultural Equipment</option>
+                                    <option value="HVAC Unit">HVAC Unit</option>
+                                    <option value="Pump">Pump</option>
+                                    <option value="Valve">Valve</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="nonAutoProductModel" class="block text-sm font-medium text-gray-700 mb-1">Product Model <span class="text-red-500">*</span></label>
+                                <input type="text" id="nonAutoProductModel" name="nonAutoProductModel" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoSerialNumber" class="block text-sm font-medium text-gray-700 mb-1">Serial Number <span class="text-red-500">*</span></label>
+                                <input type="text" id="nonAutoSerialNumber" name="nonAutoSerialNumber" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoInstallationDate" class="block text-sm font-medium text-gray-700 mb-1">Installation Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="nonAutoInstallationDate" name="nonAutoInstallationDate" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="nonAutoOperatingHours" class="block text-sm font-medium text-gray-700 mb-1">Operating Hours/Cycles <span class="text-red-500">*</span></label>
+                                <input type="number" id="nonAutoOperatingHours" name="nonAutoOperatingHours" placeholder="e.g., 5000" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Application & Environment Information (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">4</span>Application & Environment Information</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label for="nonAutoApplicationEnvironment" class="block text-sm font-medium text-gray-700 mb-1">Application Environment <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoApplicationEnvironment" name="nonAutoApplicationEnvironment" rows="3" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="e.g., High dust, corrosive atmosphere, vibration-prone" required></textarea>
+                            </div>
+                            <div>
+                                <label for="nonAutoUsagePattern" class="block text-sm font-medium text-gray-700 mb-1">Usage Pattern <span class="text-red-500">*</span></label>
+                                <textarea id="nonAutoUsagePattern" name="nonAutoUsagePattern" rows="3" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="e.g., Continuous operation, intermittent heavy loads, seasonal use" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Attachments (Non-Automotive Specific) -->
+                    <div class="form-section bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-lg font-semibold text-slate-800 flex items-center"><span class="bg-indigo-500 text-white rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">5</span>Attachments</h2>
+                        <div class="mt-5 space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 text-center">Attachment</label>
+                                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="nonAutoAttachmentUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"><span>Choose file</span><input id="nonAutoAttachmentUpload" name="nonAutoAttachmentUpload" type="file" class="sr-only"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <!-- Initially hidden, displayed only when a customer type is selected -->
+                <div id="submitButtonContainer" class="form-section pt-4 hidden">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                        Submit Claim
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+    
+    <!-- Simple Message Modal -->
+    <div id="messageModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-60 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="relative mx-auto p-8 border w-full max-w-sm shadow-xl rounded-2xl bg-white scale-95 opacity-0 transition-all duration-300" id="modalContent">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"><svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+                <h3 class="text-lg leading-6 font-bold text-slate-900 mt-4" id="modalTitle">Success!</h3>
+                <div class="mt-2 px-2 py-3"><p class="text-sm text-gray-500" id="modalMessage">Claim has been submitted successfully.</p></div>
+                <div class="items-center px-4 py-3"><button id="okButton" class="px-4 py-2 bg-indigo-600 text-white text-base font-semibold rounded-lg w-full shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">OK</button></div>
             </div>
         </div>
     </div>
-    
+    </div>
+
     <script>
-        // --- Page Navigation Logic ---
-        const pages = document.querySelectorAll('.page');
-        const homeTab = document.getElementById('homeTab');
-        const createClaimTab = document.getElementById('createClaimTab');
+        // --- Page Navigation & Animation ---
+        const homePage = document.getElementById('homePage');
+        const creationPage = document.getElementById('creationPage');
+        const fab = document.getElementById('fab');
+        const formSections = creationPage.querySelectorAll('.form-section'); // All form sections for staggered animation
 
         function showPage(pageId) {
-            pages.forEach(page => {
-                page.classList.remove('page-current');
-            });
-            document.getElementById(pageId).classList.add('page-current');
+            window.scrollTo(0, 0);
+            
+            if (pageId === 'creationPage') {
+                fab.classList.add('fab-hidden');
+                homePage.classList.remove('page-current');
+                creationPage.classList.add('page-current');
+                
+                // Staggered animation for form sections
+                formSections.forEach((section, index) => {
+                    section.style.transitionDelay = `${index * 100}ms`;
+                });
 
-            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-            if (pageId === 'homePage') {
-                homeTab.classList.add('active');
-            } else if (pageId === 'creationPage') {
-                createClaimTab.classList.add('active');
+            } else { // Navigating back to home
+                fab.classList.remove('fab-hidden');
+                creationPage.classList.remove('page-current');
+                homePage.classList.add('page-current');
             }
         }
 
-        homeTab.addEventListener('click', () => showPage('homePage'));
-        createClaimTab.addEventListener('click', () => showPage('creationPage'));
+        // --- Global Search Logic ---
+        const searchInput = document.getElementById('globalSearch');
+        const claimCards = document.querySelectorAll('.claim-card');
+        const noResultsMessage = document.getElementById('noResultsMessage');
 
-        // --- Form Submission Logic (Modified) ---
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            let visibleCount = 0;
+            claimCards.forEach(card => {
+                const searchTerms = card.dataset.searchTerms.toLowerCase();
+                if (searchTerms.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            noResultsMessage.style.display = visibleCount === 0 ? '' : 'none';
+        });
+
+        // --- Conditional Fields Logic ---
+        const customerTypeSelect = document.getElementById('customerType');
+        const automotiveFormSections = document.getElementById('automotiveFormSections');
+        const nonAutomotiveFormSections = document.getElementById('nonAutomotiveFormSections');
+        const submitButtonContainer = document.getElementById('submitButtonContainer'); // Get the submit button container
+
+        // Get all input/select/textarea elements within the automotive sections
+        const automotiveRequiredInputs = [
+            ...automotiveFormSections.querySelectorAll('select[required]'),
+            ...automotiveFormSections.querySelectorAll('input[required]'),
+            ...automotiveFormSections.querySelectorAll('textarea[required]')
+        ];
+
+        // Get all input/select/textarea elements within the non-automotive sections
+        // Note: Specific IDs are used for non-automotive inputs to ensure correct selection
+        const nonAutomotiveRequiredInputs = [
+            document.getElementById('nonAutoCustomer'),
+            document.getElementById('nonAutoCustomerReportedDate'),
+            document.getElementById('nonAutoDefectType'),
+            document.getElementById('nonAutoCustomerVerbatim'),
+            document.getElementById('nonAutoBadPartUpload'),
+            document.getElementById('nonAutoProductType'),
+            document.getElementById('nonAutoProductModel'),
+            document.getElementById('nonAutoSerialNumber'),
+            document.getElementById('nonAutoInstallationDate'),
+            document.getElementById('nonAutoOperatingHours'),
+            document.getElementById('nonAutoApplicationEnvironment'),
+            document.getElementById('nonAutoUsagePattern'),
+        ].filter(Boolean); // Filter out any nulls if an ID doesn't exist
+
+
+        customerTypeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+            
+            // Hide all conditional sections first
+            automotiveFormSections.classList.add('hidden');
+            nonAutomotiveFormSections.classList.add('hidden');
+            submitButtonContainer.classList.add('hidden'); // Hide submit button by default
+
+            // Set all conditional inputs to not required by default
+            automotiveRequiredInputs.forEach(input => input.required = false);
+            nonAutomotiveRequiredInputs.forEach(input => input.required = false);
+            
+            if (selectedType === 'Automotive') {
+                automotiveFormSections.classList.remove('hidden');
+                submitButtonContainer.classList.remove('hidden'); // Show submit button
+                // Set required for automotive fields
+                automotiveRequiredInputs.forEach(input => input.required = true);
+            } else if (selectedType === 'Non-Automotive') {
+                nonAutomotiveFormSections.classList.remove('hidden');
+                submitButtonContainer.classList.remove('hidden'); // Show submit button
+                // Set required for non-automotive fields
+                nonAutomotiveRequiredInputs.forEach(input => input.required = true);
+            }
+        });
+
+        // Trigger change on load to set initial state
+        customerTypeSelect.dispatchEvent(new Event('change'));
+
+        // --- Form Submission Simulation ---
         const warrantyForm = document.getElementById('warrantyForm');
         warrantyForm.addEventListener('submit', function(event) {
             event.preventDefault();
             showModal('Success!', 'Your warranty claim has been created and submitted for review.');
             warrantyForm.reset();
+            // Reset customer type select and trigger change to hide conditional fields
+            customerTypeSelect.value = ""; 
+            customerTypeSelect.dispatchEvent(new Event('change'));
         });
         
         // --- Modal Logic ---
@@ -303,27 +564,30 @@
         const okButton = document.getElementById('okButton');
         const modalTitle = document.getElementById('modalTitle');
         const modalMessage = document.getElementById('modalMessage');
+        const modalContent = document.getElementById('modalContent');
 
         function showModal(title, message) {
             modalTitle.textContent = title;
             modalMessage.textContent = message;
             modal.classList.remove('hidden');
+            // Animate modal content
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+            }, 10);
         }
 
         okButton.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            showPage('homePage');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                showPage('homePage');
+            }, 300); // Wait for the transition to complete
         });
 
         // --- View Claim Details (Placeholder) ---
         function viewClaimDetails() {
             showModal('View Details', 'This feature to view full claim details will be available in a future update.');
         }
-
-        // Initialize the first page
-        document.addEventListener('DOMContentLoaded', () => {
-            showPage('homePage');
-        });
     </script>
 </body>
 </html>
