@@ -150,6 +150,11 @@
                                 <label for="warrantyClaimNumber" class="block text-sm font-medium text-gray-700 mb-1">Warranty Claim Number</label>
                                 <p id="warrantyClaimNumber" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 select-none">WC-AUTO-001</p>
                             </div>
+                            <!-- New Warranty Name field -->
+                            <div>
+                                <label for="warrantyName" class="block text-sm font-medium text-gray-700 mb-1">Warranty Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="warrantyName" name="warrantyName" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="e.g., Crankshaft Assembly, Industrial Motor" required>
+                            </div>
                             <div>
                                 <label for="customer" class="block text-sm font-medium text-gray-700 mb-1">Customer <span class="text-red-500">*</span></label>
                                 <select id="customer" name="customer" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm py-3 px-3 text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
@@ -292,7 +297,7 @@
     </div>
     
     <!-- =================================================================
-         CLAIM DETAILS PAGE (UPDATED)
+         CLAIM DETAILS PAGE
     ================================================================== -->
     <div id="claimDetailsPage" class="page">
         <header class="bg-white shadow-lg sticky top-0 z-20">
@@ -531,7 +536,7 @@
             showModal('Claim Submitted!', 'Your warranty claim has been successfully submitted.');
         });
         
-        // --- Claim Details Page Logic (NEW) ---
+        // --- Claim Details Page Logic ---
         const claimTitleEl = document.getElementById('claimTitle');
         const claimIdEl = document.getElementById('claimId');
         const claimStatusEl = document.getElementById('claimStatus');
